@@ -2,13 +2,15 @@
   "name": "tablero-comunicaciones",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://JoseVeraTRX.github.io/tablero-comunicaciones",
+  "homepage": "https://joseveratrx.github.io/tablero-comunicacionesv1/",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "leaflet": "^1.9.4",
