@@ -1,0 +1,379 @@
+:root {
+  /* Colores Corporativos */
+  --color-primario-oscuro: #0B4359;
+  --color-primario-medio: #024959;
+  --color-acento-azul: #1EB7D9;
+  --color-acento-naranja: #F2622E;
+  --color-acento-marron: #A65437;
+
+  /* Paleta Funcional (Ajustada) */
+  --color-fondo-principal: #f0f2f5; /* CAMBIO: Fondo general más claro, tipo dashboard */
+  --color-fondo-tarjeta: #ffffff; /* Fondo blanco para todas las tarjetas */
+  --color-texto-principal: #263238; /* Texto principal oscuro (casi negro) */
+  --color-texto-secundario: #546e7a; /* Gris oscuro para texto secundario */
+  --color-texto-titulos: var(--color-primario-oscuro); /* Títulos con el color corporativo más oscuro */
+  --color-borde-suave: #e0e0e0; /* Borde gris muy claro */
+  --color-sombra: rgba(0, 0, 0, 0.06); /* Sombra sutil */
+}
+
+/* --- ESTILOS GENERALES --- */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--color-primario-oscuro); /* Fondo claro */
+  margin: 0;
+  color: var(--color-texto-principal); /* Texto oscuro */
+  line-height: 1.6;
+}
+
+.dashboard-container {
+  display: grid;
+  grid-template-areas:
+    "header header header"
+    "paneles paneles paneles"
+    "filtros filtros filtros"
+    "mapa mapa summary"
+    "radar treemap histograma"; /* Asegura alineación horizontal */
+  grid-template-columns: 2fr 2fr 1fr; /* Mapa más grande que summary */
+  grid-template-rows: auto auto auto 3fr 2fr; /* Última fila más pequeña */
+  gap: 15px;
+  padding: 20px;
+  max-width: 1400px; /* Evita que se estire demasiado */
+  margin: 20px auto;
+}
+
+/* Asignar áreas */
+.header-container { grid-area: header; }
+.paneles-container { grid-area: paneles; }
+.filtros-container { grid-area: filtros; }
+.map-container { grid-area: mapa; }
+.summary-container { grid-area: summary; }
+.radar-container { grid-area: radar; }
+.treemap-container { grid-area: treemap; }
+.histograma-container { grid-area: histograma; }
+
+/* Ajustes para la fila de gráficos */
+.radar-container,
+.treemap-container,
+.histograma-container {
+  min-height: 300px; /* Garantiza espacio suficiente */
+  display: fit-content; /* Ocupa el espacio necesario */
+  flex-direction: column; /* Alineación vertical */
+  align-items: center;
+  justify-content: center;
+}
+.header-container img {
+  width: 100%; /* Ocupa todo el ancho disponible */
+  max-height: 150px; /* Limita la altura para que sea una cabecera */
+  object-fit: cover; /* Ajusta la imagen sin distorsionar */
+}
+
+
+.recharts-radar-polygon{
+  color: var(--color-acento-azul);
+}
+
+h3 {
+  color: var(--color-texto-titulos);
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: 1.3em;
+  font-weight: 600;
+}
+h4 {
+  color: var(--color-texto-secundario); /* Títulos secundarios más sobrios */
+  margin-top: 0;
+  margin-bottom: 10px;
+  font-size: 0.95em;
+  font-weight: 600;
+  text-transform: uppercase; /* Mantenemos mayúsculas */
+  letter-spacing: 0.5px;
+}
+
+
+
+/* --- PANELES (Regresando al estilo anterior pero mejorado) --- */
+.paneles-container {
+  display: inline-flex;
+  /* Ajustar el número de columnas según el espacio disponible en su área */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 50px;
+}
+
+.panel-card {
+  background-color: var(--color-fondo-tarjeta); /* Fondo blanco */
+  padding: 18px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px var(--color-sombra);
+  text-align: center;
+  border-left: 5px solid var(--color-borde-suave); /* Borde inicial gris claro */
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+.panel-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.panel-card h4 { /* Estilo del título del panel */
+  margin-bottom: 8px;
+  font-size: 0.8em; /* Más pequeño para que quepa bien */
+  color: var(--color-texto-secundario); /* Gris oscuro */
+  font-weight: 600;
+}
+.panel-value { /* Estilo del número */
+  font-size: 1.7em;
+  font-weight: 700;
+  margin: 0;
+  color: var(--color-texto-principal); /* Número oscuro */
+}
+/* Colores corporativos en el borde lateral */
+.panel-total { border-left-color: #cf28f8; }
+.panel-ejecucion { border-left-color: var(--color-acento-azul); }
+.panel-proyectado { border-left-color: var(--color-acento-naranja); }
+.panel-ejecutado { border-left-color: #28a745; } /* Verde */
+.panel-suspendido { border-left-color: var(--color-acento-marron); }
+
+
+/* --- SUMMARY (A la derecha de los paneles) --- */
+.summary-container {
+  display: grid;
+  height: fit-content;
+  width: fit-content;
+  min-height: fit-content;
+  background-color: var(--color-fondo-tarjeta);
+  padding: 20px 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px var(--color-sombra);
+  /* Ocupa la altura de su fila si es necesario */
+  /* height: 100%; */
+  /* overflow-y: auto; */ /* Scroll si el contenido es muy alto */
+}
+.summary-container h3 { /* Título del Summary */
+  border-bottom: 1px solid var(--color-borde-suave);
+  padding-bottom: 10px;
+  font-size: 1.1em; /* Tamaño adecuado */
+  color: var(--color-texto-titulos);
+}
+.summary-total {
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    text-align: left; /* Alineación normal */
+}
+.summary-total strong { color: var(--color-texto-principal); }
+.summary-section h4 {
+    margin-bottom: 8px;
+    font-size: 0.9em;
+    text-align: center;
+    color: var(--color-texto-secundario); /* Título de sección sobrio */
+    font-weight: 600;
+}
+.summary-list { list-style: none; padding: 0; margin: 0 0 15px 0; }
+.summary-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    font-size: 0.85em;
+    border-bottom: 1px dotted #eee;
+}
+.summary-list li:last-child { border-bottom: none; }
+.summary-label { color: var(--color-texto-secundario); }
+.summary-value { font-weight: 600; color: var(--color-texto-principal); }
+.summary-empty { font-style: italic; color: #999; font-size: 0.85em; }
+
+/* --- FILTROS --- */
+.filtros-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5%; /* Espacio entre filtros */ 
+  background-color: var(--color-fondo-tarjeta);
+  padding: 18px 22px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px var(--color-sombra);
+}
+.filtro-item label {
+  font-weight: 500;
+  font-size: 0.9em;
+  color: var(--color-texto-secundario);
+}
+.filtro-select, select[id^="filtro-"] {
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 6px;
+  background-color: #fff;
+  color: var(--color-texto-principal); /* Texto oscuro */
+  font-size: 0.9em;
+  min-width: 170px;
+  cursor: pointer;
+}
+.filtro-select:hover, select[id^="filtro-"]:hover { border-color: #adb5bd; }
+.filtro-select:focus, select[id^="filtro-"]:focus {
+  outline: none;
+  border-color: var(--color-acento-azul);
+  box-shadow: 0 0 0 3px rgba(30, 183, 217, 0.2);
+}
+/* Opciones del select mantienen fondo blanco */
+.filtro-select option { background-color: #fff; color: #333; }
+
+/* --- MAPA (Ocupando más espacio) --- */
+.map-container {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 5px var(--color-sombra);
+  height: fit-content; /* Ocupa toda la altura de su celda grid */
+  min-height: 500px; /* Altura mínima */
+  display: flex;
+}
+.map-container > .leaflet-container {
+    flex-grow: 1;
+    border-radius: 8px;
+}
+/* Popups del mapa (fondo blanco, texto oscuro) */
+.leaflet-popup-content-wrapper {
+    background-color: var(--color-fondo-tarjeta); /* Fondo blanco */
+    color: var(--color-texto-principal); /* Texto oscuro */
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgb(255, 123, 0);
+}
+.leaflet-popup-content { font-size: 0.85em; line-height: 1.5; }
+.leaflet-popup-content strong { color: var(--color-primario-oscuro); } /* Título popup oscuro */
+.leaflet-popup-tip { background-color: var(--color-fondo-tarjeta); }
+.leaflet-popup-close-button { color: var(--color-texto-secundario) !important; }
+
+/* --- CONTENEDOR DE ESTADÍSTICAS (Gráficos) --- */
+.stats-container {
+ display: flex;
+ flex-direction: column;
+ gap: 20px;
+ height: 100%; /* Ocupa la altura de su celda */
+ overflow-y: auto; /* Scroll si los gráficos superan la altura */
+ background-color: #fafafa; /* Fondo ligeramente distinto si quieres */
+ /* padding: 15px; */
+ /* border-radius: 8px; */
+}
+
+.chart-item {
+  background-color: var(--color-fondo-tarjeta);
+  padding: 20px 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px var(--color-sombra);
+  /* Altura flexible, el contenedor stats maneja el scroll */
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+}
+.chart-item h3 { /* Título del gráfico */
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--color-borde-suave);
+  padding-bottom: 10px;
+  font-size: 1.1em;
+  color: var(--color-texto-titulos);
+}
+.chart-item .recharts-responsive-container {
+   flex-grow: 1; /* Gráfico ocupa espacio restante */
+}
+
+/* --- ESTILOS DE GRÁFICOS (Recharts sobre fondo blanco) --- */
+.recharts-cartesian-axis-tick-value tspan,
+.recharts-tooltip-label,
+.recharts-tooltip-item-name,
+.recharts-tooltip-item-value,
+.recharts-polar-angle-axis-tick tspan {
+  fill: var(--color-texto-secundario) !important; /* Texto gris oscuro */
+  font-size: 0.8em;
+}
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line,
+.recharts-polar-grid-concentric-polygon {
+  stroke: var(--color-borde-suave) !important; /* Líneas claras */
+  opacity: 0.7;
+}
+.recharts-default-tooltip {
+  background-color: rgba(255, 255, 255, 0.95) !important; /* Fondo blanco tooltip */
+  border: 1px solid var(--color-borde-suave) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
+}
+.recharts-tooltip-label { color: var(--color-texto-titulos) !important; font-weight: 600;} /* Label del tooltip */
+
+/* Colores corporativos para gráficos */
+.custom-bar .recharts-bar-rectangle { fill: var(--color-acento-azul); }
+.recharts-radar-polygon { stroke: var(--color-acento-naranja) !important; fill: var(--color-acento-naranja) !important; opacity: 0.7; }
+.treemap-node rect { fill: var(--color-acento-marron); stroke: var(--color-fondo-tarjeta); stroke-width: 2; }
+.treemap-label { fill: #fff; } /* Texto blanco sobre treemap marrón */
+
+.histograma-container{
+  background-color: var(--color-fondo-tarjeta); /* Fondo blanco */
+  padding: 20px 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px var(--color-sombra);
+}
+.radar-container {
+  background-color: var(--color-fondo-tarjeta); /* Fondo blanco */
+  padding: 20px 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px var(--color-sombra);
+}
+/* Placeholder */
+.chart-placeholder {
+  display: flex; justify-content: center; align-items: center; min-height: 250px;
+  color: var(--color-texto-secundario); background-color: #f9f9f9;
+  border: 1px dashed var(--color-borde-suave); border-radius: 8px; font-size: 0.9em;
+  text-align: center; padding: 20px;
+}
+.treemap-node-Cicloparquederos { fill: #8dd1e1; } /* Color específico para Cicloparquederos */
+.treemap-node-Presupuesto-Participativo { fill: #82ca9d; } /* Color específico para Presupuesto Participativo */
+.treempa-node-1{
+  fill: var(--color-acento-naranja);
+}
+.treemap-node-2{
+  fill: var(--color-acento-azul);
+}
+.treemap-node-3{
+  fill: var(--color-acento-marron);
+}
+/* --- AJUSTES RESPONSIVOS --- */
+@media (max-width: 1200px) { /* Tablets y pantallas medianas */
+  .dashboard-container {
+    grid-template-areas: /* Ajustamos áreas para tablet */
+      "header header"
+      "paneles summary" /* Paneles y summary comparten fila */
+      "filtros filtros"
+      "mapa mapa"   /* Mapa ocupa todo el ancho */
+      "stats stats"; /* Stats ocupa todo el ancho */
+    grid-template-columns: 1fr 1fr; /* 2 columnas */
+    grid-template-rows: auto auto auto auto auto; /* Filas automáticas */
+  }
+  .stats-container {
+      /* Gráficos lado a lado en tablet si caben */
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      overflow-y: visible; /* Quitamos scroll interno */
+  }
+}
+
+@media (max-width: 768px) { /* Móviles */
+  .dashboard-container {
+    grid-template-areas: /* Todo a una columna */
+      "header"
+      "paneles"
+      "summary" /* Summary debajo de paneles */
+      "filtros"
+      "mapa"
+      "stats";
+    grid-template-columns: 1fr;
+    padding: 15px;
+    gap: 15px;
+    margin: 10px auto;
+  }
+  .radar-container, .treemap-container, .histograma-container {
+    background-color: var(--color-fondo-tarjeta); /* Fondo blanco */
+    padding: 15px 20px;
+  }
+  .paneles-container { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .panel-card { padding: 12px; }
+  .panel-value { font-size: 1.5em; }
+  .filtros-container { padding: 15px; gap: 12px; flex-direction: column; align-items: stretch; }
+  .filtro-item { flex-direction: column; align-items: flex-start; gap: 4px; width: 100%; }
+  .filtro-select, select[id^="filtro-"] { width: 100%; min-width: unset; }
+  .map-container { min-height: 300px; }
+  .stats-container { grid-template-columns: 1fr; gap: 15px;} /* Gráficos siempre apilados */
+  .chart-item, .summary-container { padding: 15px; min-height: 250px;}
+}
