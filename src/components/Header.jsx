@@ -4,9 +4,10 @@ import "../styles.css";
 const Header = () => {
   return (
     <div className="header-container">
-    <img src="../SECRETARIA DE INFRAESTRUCTURA FÍSICA.png" alt="Cabecera" />
+      <img src={`${import.meta.env.BASE_URL}SECRETARIA DE INFRAESTRUCTURA FÍSICA.png`} alt="Cabecera" />
     </div>
   );
 };
+
 
 export default Header;
